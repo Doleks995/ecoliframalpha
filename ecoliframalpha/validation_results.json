@@ -1,0 +1,26 @@
+{
+    "variance": {
+        "correlation": -0.9851398288023203,
+        "mean_squared_error": 0.0011223924427142408,
+        "simulated_mean": 0.03690395450506165,
+        "experimental_mean": 0.00585
+    },
+    "Fano_factor": {
+        "correlation": 0.9659670591217013,
+        "mean_squared_error": 0.3102032755332155,
+        "simulated_mean": 0.1002368811290443,
+        "experimental_mean": 0.585
+    },
+    "CV": {
+        "correlation": 0.9742254770966493,
+        "mean_squared_error": 0.2666585451242496,
+        "simulated_mean": 0.5599832776347526,
+        "experimental_mean": 0.093
+    },
+    "CRI": {
+        "correlation": 0.9959372266134495,
+        "mean_squared_error": 4.77131017842543,
+        "simulated_mean": 0.7548198193390213,
+        "experimental_mean": 2.725
+    }
+}
