@@ -36,6 +36,7 @@ def save_to_json(data, filename, output_path="results/"):
     with open(file_path, "w") as json_file:
         json.dump(data, json_file, indent=4)
     print(f"JSON results saved to: {file_path}")
+    
 def normalize_data(series):
     """
     Normalizes a pandas Series to a range of [0, 1].
@@ -45,6 +46,7 @@ def normalize_data(series):
         pd.Series: Normalized data.
     """
     return (series - series.min()) / (series.max() - series.min())
+
 def generate_summary(variability_results, validation_results):
     """
     Generates a textual summary of simulation results.
