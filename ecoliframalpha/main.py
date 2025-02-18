@@ -12,6 +12,7 @@ from utils import ensure_output_directory, save_to_csv, save_to_json, generate_s
 # Default Settings
 OUTPUT_PATH = "results/"  # Path for saving output
 METRICS = ["variance", "Fano_factor", "CV", "CRI"]  # Metrics for variability
+
 def main():
     # Step 1: Fetch user inputs
     user_inputs = get_user_inputs()
