@@ -15,11 +15,11 @@ def get_user_inputs():
     nutrient_levels = [float(x) for x in (nutrient_levels or "1.0,0.75,0.5,0.25,0.1").split(",")]
 
     robust_codons = input("Enter robust codons as a comma-separated list (default: AAA,GAT): ")
-    robust_codons = robust_codons.split(",") or ["AAA", "GAT"]
+    robust_codons = robust_codons.split(",") if robust_codons else ["AAA", "GAT"] #change other attributions to this code format later
 
     sensitive_codons = input("Enter sensitive codons as a comma-separated list (default: CGT,CTG): ")
-    sensitive_codons = sensitive_codons.split(",") or ["CGT", "CTG"]
-
+    sensitive_codons = sensitive_codons.split(",") if sensitive_codons else ["CGT", "CTG"]
+    
     stress_probability = float(input("Enter stress probability (default: 0.1): ") or 0.1)
     recovery_probability = float(input("Enter recovery probability (default: 0.05): ") or 0.05)
 
