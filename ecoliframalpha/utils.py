@@ -58,16 +58,30 @@ def generate_summary(variability_results, validation_results):
     """
     summary = []
     summary.append("### Simulation Summary ###\n")
-    summary.append("Variability Metrics (Mean Values):\n")
-    for metric in ["variance", "Fano_factor", "CV", "CRI"]:
-        if metric in variability_results.columns:
-            mean_value = variability_results[metric].mean()
-            summary.append(f"- {metric}: {mean_value:.4f}")
-    summary.append("\nValidation Results:\n")
-    for metric, results in validation_results.items():
-        if isinstance(results, dict):
-            summary.append(f"- {metric}: Correlation = {results['correlation']:.4f}, MSE = {results['mean_squared_error']:.6f}")
+
+    # Variability Results
+    if not variability_results.empty:
+        summary.append("Variability Metrics (Mean Values):")
+        for metric in ["variance", "Fano_factor", "CV", "CRI"]:
+            if metric in variability_results.columns:
+                mean_value = variability_results[metric].mean()
+                summary.append(f"- {metric}: {mean_value:.4f}")
+            else:
+                summary.append(f"- {metric}: (Not available)")
+    else:
+        summary.append("No variability results available.")
+
+    # Validation Results
+    if validation_results:
+        summary.append("\nValidation Metrics:")
+        for key, value in validation_results.items():
+            summary.append(f"- {key}: {value}")
+    else:
+        summary.append("\nNo validation results available.")
+
     return "\n".join(summary)
+
+
 def save_summary_to_file(summary, filename="simulation_summary.txt", output_path="results/"):
     """
     Saves a simulation summary to a text file.
@@ -81,6 +95,8 @@ def save_summary_to_file(summary, filename="simulation_summary.txt", output_path
     with open(file_path, "w") as file:
         file.write(summary)
     print(f"Summary saved to: {file_path}")
+
+
 if __name__ == "__main__":
     from utils import (
         save_to_csv,
