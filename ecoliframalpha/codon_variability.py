@@ -12,8 +12,15 @@ def analyze_variability(rna_results, metrics=["variance", "Fano_factor", "CV", "
     Returns:
         pd.DataFrame: A summary DataFrame with variability metrics for each codon.
     """
+    # Validate input
+    if rna_results.empty:
+        return pd.DataFrame(columns=["codon"] + metrics)  # Return empty DataFrame with correct columns
+
     # Extract codons from the DataFrame columns
     codons = [col.replace("_efficiency", "") for col in rna_results.columns if "_efficiency" in col]
+
+    if not codons:  # No efficiency columns found
+        return pd.DataFrame(columns=["codon"] + metrics)
 
     # Initialize results dictionary
     variability_results = {metric: [] for metric in metrics}
@@ -21,11 +28,19 @@ def analyze_variability(rna_results, metrics=["variance", "Fano_factor", "CV", "
 
     # Loop through each codon and calculate metrics
     for codon in codons:
-        efficiencies = rna_results[f"{codon}_efficiency"]
+        efficiencies = rna_results[f"{codon}_efficiency"].dropna()  # Remove NaNs for calculations
+
+        if efficiencies.empty:
+            # If all values are NaN, store NaN for each requested metric
+            variability_results["codon"].append(codon)
+            for metric in metrics:
+                variability_results[metric].append(np.nan)
+            continue  # Skip to the next codon
+
         mean_efficiency = np.mean(efficiencies)
-        variance = np.var(efficiencies)
+        variance = np.var(efficiencies, ddof=1)  # Use sample variance
         fano_factor = variance / mean_efficiency if mean_efficiency > 0 else np.nan
-        cv = np.std(efficiencies) / mean_efficiency if mean_efficiency > 0 else np.nan
+        cv = np.std(efficiencies, ddof=1) / mean_efficiency if mean_efficiency > 0 else np.nan
         cri = mean_efficiency / (np.max(efficiencies) - np.min(efficiencies)) if np.max(efficiencies) > np.min(efficiencies) else np.nan
 
         # Append results for the current codon
@@ -41,6 +56,7 @@ def analyze_variability(rna_results, metrics=["variance", "Fano_factor", "CV", "
 
     # Convert results dictionary to DataFrame
     return pd.DataFrame(variability_results)
+
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
