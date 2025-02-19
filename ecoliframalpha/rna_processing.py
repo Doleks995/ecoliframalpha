@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+import pandas as pd
+
 def process_rna(stressed_results, codon_efficiency, rnase_activity=0.05, decay_variability=0.1):
     """
     Processes RNA stability and decay based on codon efficiency.
@@ -14,19 +16,32 @@ def process_rna(stressed_results, codon_efficiency, rnase_activity=0.05, decay_v
     Returns:
         pd.DataFrame: Updated dataframe with RNA stability accounted for.
     """
+    if stressed_results.empty:
+        raise ValueError("Empty dataset")
+    # Ensure required columns exist
+    if "nutrient_level" not in stressed_results.columns:
+        raise ValueError("Missing required column: 'nutrient_level'")
+
+    # Copy the DataFrame to avoid modifying the original
+    updated_results = stressed_results.copy()
+
     # Calculate decay rates based on codon efficiency
     for codon, properties in codon_efficiency.items():
-        base_decay_rate = rnase_activity * (1 + decay_variability * (1 - properties["base_efficiency"]))
-        
-        # Apply RNA processing effects directly to the DataFrame
-        stressed_results[f"{codon}_efficiency"] *= (
-            1 - base_decay_rate - stressed_results["nutrient_level"] * decay_variability
-        )
-        
-        # Clip efficiencies to ensure non-negative values
-        stressed_results[f"{codon}_efficiency"] = stressed_results[f"{codon}_efficiency"].clip(lower=0)
+        if "base_efficiency" not in properties:
+            raise ValueError(f"Missing 'base_efficiency' for codon: {codon}")
 
-    return stressed_results
+        base_decay_rate = rnase_activity * (1 + decay_variability * (1 - properties["base_efficiency"]))
+
+        # Apply RNA processing effects
+        updated_results[f"{codon}_efficiency"] *= (
+            1 - base_decay_rate - updated_results["nutrient_level"] * decay_variability
+        )
+
+        # Clip efficiencies to ensure non-negative values
+        updated_results[f"{codon}_efficiency"] = updated_results[f"{codon}_efficiency"].clip(lower=0)
+
+    return updated_results
+
 
 
 if __name__ == "__main__":
