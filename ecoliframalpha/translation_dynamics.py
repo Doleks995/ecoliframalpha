@@ -13,10 +13,18 @@ def simulate_translation(initialization_results):
     Returns:
         pd.DataFrame: Updated DataFrame with simulated translation efficiencies for each codon.
     """
+
+    required_keys = ["simulation_data", "codon_efficiency", "nutrient_levels"]
+    for key in required_keys:
+        if key not in initialization_results:
+            raise ValueError("Missing required key")
+
     # Extract data from initialization results
     simulation_data = initialization_results["simulation_data"]
     codon_efficiency = initialization_results["codon_efficiency"]
     nutrient_levels = initialization_results["nutrient_levels"]
+
+
     
     # Constants for translation dynamics
     max_efficiency = 1.5  # Maximum codon efficiency under optimal conditions
@@ -25,32 +33,27 @@ def simulate_translation(initialization_results):
     nutrient_threshold = 0.5  # Nutrient level threshold for half-maximal efficiency
 
     # Iterate over each cycle in the simulation
+    
     for index, row in simulation_data.iterrows():
-        nutrient_level = row["nutrient_level"]
+        nutrient_levels = row["nutrient_level"]
 
         # Update codon efficiencies using a Hill function
         for codon, properties in codon_efficiency.items():
             base_efficiency = properties["base_efficiency"]
-            efficiency = max_efficiency * expit(hill_coefficient * (nutrient_level - nutrient_threshold))
+            efficiency = max_efficiency * expit(hill_coefficient * (nutrient_levels - nutrient_threshold))
             
-            # Scale efficiency based on codon type
-            if properties["type"] == "robust":
-                efficiency *= base_efficiency
-            elif properties["type"] == "sensitive":
-                efficiency *= base_efficiency * nutrient_level
-
-            simulation_data.at[index, f"{codon}_efficiency"] = efficiency
                     
             # Scale efficiency for robust and sensitive codons
             if properties["type"] == "robust":
                 efficiency *= base_efficiency  # Robust codons maintain higher efficiency
             elif properties["type"] == "sensitive":
-                efficiency *= base_efficiency * nutrient_level  # Sensitive codons degrade with stress
+                efficiency *= base_efficiency * nutrient_levels  # Sensitive codons degrade with stress
             
-            # Update the simulation data
-            simulation_data.at[index, f"{codon}_efficiency"] = efficiency
+            #Update simulation
+            simulation_data[f"{codon}_efficiency"] = efficiency
+            print(simulation_data)
 
-    return simulation_data
+        return simulation_data
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
