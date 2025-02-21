@@ -24,15 +24,25 @@ def validate_simulation(variability_results, experimental_data, metrics=["varian
             experimental = experimental_data[metric].values
 
             # Check for NaN values
-            if np.any(np.isnan(simulated)) or np.any(np.isnan(experimental)):
-                print(f"Warning: Metric '{metric}' contains NaN values. Skipping validation for this metric.")
-                validation_results[metric] = "NaN values detected."
+            if np.isnan(simulated).all() or np.isnan(experimental).all():
+                validation_results[metric] = "NaN values detected in all entries."
+                print(f"Metric '{metric}' contains only NaN values. Skipping validation.")
+                continue
+
+            # Remove NaN values (if any)
+            mask = ~np.isnan(simulated) & ~np.isnan(experimental)
+            simulated = simulated[mask]
+            experimental = experimental[mask]
+
+            if len(simulated) < 2 or len(experimental) < 2:
+                validation_results[metric] = "Not enough data points for correlation."
+                print(f"Metric '{metric}' has too few values for correlation. Skipping.") #maybe return to print
                 continue
 
             # Check for constant arrays
             if np.all(simulated == simulated[0]) or np.all(experimental == experimental[0]):
-                print(f"Warning: Metric '{metric}' is constant in one or both datasets. Skipping correlation.")
                 validation_results[metric] = "Constant input detected."
+                print(f"Metric '{metric}' is constant in one or both datasets. Skipping correlation.")
                 continue
 
             # Calculate Pearson correlation coefficient
@@ -49,11 +59,11 @@ def validate_simulation(variability_results, experimental_data, metrics=["varian
                 "experimental_mean": np.mean(experimental),
             }
         else:
-            # Handle missing metrics
-            validation_results[metric] = "Metric not found in both datasets."
-            print(f"Warning: Metric '{metric}' missing in one of the datasets.")
+            validation_results[metric] = "Metric missing in simulation or experimental data."
+            print(f"Metric '{metric}' missing in one of the datasets.")
 
     return validation_results
+
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
