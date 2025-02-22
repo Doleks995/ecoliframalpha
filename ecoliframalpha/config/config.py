@@ -17,5 +17,10 @@ def get_config():
     config["metrics"] = ["variance", "Fano_factor", "CV", "CRI"]  # Metrics for variability
 
     config["num_cycles"]= 1000
+    config["nutrient_levels"] = [1.0, 0.75, 0.5, 0.25, 0.1]
+    config["robust_codons"] = ["AAA", "GAT"]
+    config["sensitive_codons"] = ["CGT", "CTG"]
+    config["stress_probability"] = 0.1
+    config["recovery_probability"] = 0.05
 
     return config

@@ -66,14 +66,14 @@ def get_user_inputs():
 
     # Process user inputs
     num_cycles = get_value("num_cycles", "Enter the number of simulation cycles", config["num_cycles"], int)
-    nutrient_levels = get_value("nutrient_levels", "Enter nutrient levels (comma-separated)", "1.0,0.75,0.5,0.25,0.1",
+    nutrient_levels = get_value("nutrient_levels", "Enter nutrient levels (comma-separated)", config["nutrient_levels"],
                                 lambda x: x if isinstance(x, list) else [float(i) for i in x.split(",")])
-    robust_codons = get_value("robust_codons", "Enter robust codons (comma-separated)", "AAA,GAT",
+    robust_codons = get_value("robust_codons", "Enter robust codons (comma-separated)", config["robust_codons"],
                               lambda x: x if isinstance(x, list) else x.split(","))
-    sensitive_codons = get_value("sensitive_codons", "Enter sensitive codons (comma-separated)", "CGT,CTG",
+    sensitive_codons = get_value("sensitive_codons", "Enter sensitive codons (comma-separated)", config["sensitive_codons"],
                                  lambda x: x if isinstance(x, list) else x.split(","))
-    stress_probability = get_value("stress_probability", "Enter stress probability", 0.1, float)
-    recovery_probability = get_value("recovery_probability", "Enter recovery probability", 0.05, float)
+    stress_probability = get_value("stress_probability", "Enter stress probability", config["stress_probability"], float)
+    recovery_probability = get_value("recovery_probability", "Enter recovery probability",  config["recovery_probability"], float)
 
 
     return {
