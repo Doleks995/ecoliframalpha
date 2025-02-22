@@ -1,7 +1,4 @@
 import pandas as pd
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from ecoliframalpha.utils import generate_summary
 
 def test_generate_summary_basic():

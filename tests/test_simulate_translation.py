@@ -1,8 +1,5 @@
 import pandas as pd
 import pytest
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from ecoliframalpha.translation_dynamics import simulate_translation
 
 def test_simulate_translation_basic():

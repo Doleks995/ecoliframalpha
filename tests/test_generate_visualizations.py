@@ -1,8 +1,6 @@
 import os
 import pandas as pd
 import pytest
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from ecoliframalpha.visualization import generate_visualizations
 
 def test_generate_visualizations_creates_files(tmp_path):

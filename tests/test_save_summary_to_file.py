@@ -1,7 +1,4 @@
-import os
 import pytest
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from ecoliframalpha.utils import save_summary_to_file
 
 def test_save_summary_to_file(tmp_path):

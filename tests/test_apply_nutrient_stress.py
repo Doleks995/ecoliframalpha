@@ -1,9 +1,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from ecoliframalpha.nutrient_stress import apply_nutrient_stress  
 
 def test_apply_nutrient_stress_basic():
