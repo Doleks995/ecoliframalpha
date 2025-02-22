@@ -9,7 +9,7 @@ from codon_variability import analyze_variability
 from validation import validate_simulation
 from visualization import generate_visualizations
 from utils import ensure_output_directory, save_to_csv, save_to_json, generate_summary, save_summary_to_file
-from ecoliframalpha.config.config import get_config
+from .config.config import get_config
 
 
 #Set default configuration

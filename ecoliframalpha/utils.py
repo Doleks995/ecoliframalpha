@@ -5,12 +5,24 @@ import json
 
 def ensure_output_directory(path):
     """
-    Ensures that the output directory exists. If not, creates it.
+    Ensures that the output directory exists. If it does not exist, it creates it.
+
     Parameters:
         path (str): Path to the output directory.
+
+    Returns:
+        bool: True if the directory was created, False if it already existed.
+
+    Raises:
+        OSError: If the directory cannot be created due to permission issues or other OS-level errors.
     """
-    if not os.path.exists(path):
-        os.makedirs(path)
+    try:
+        os.makedirs(path, exist_ok=True)  # Prevent race conditions
+        return not os.path.exists(path)  # True if created, False if already existed
+    except OSError as e:
+        print(f"Error: Unable to create directory '{path}': {e}")
+        raise  # Re-raise the error for better debugging
+
 def save_to_csv(dataframe, filename, output_path="results/"):
     """
     Saves a DataFrame to a CSV file.

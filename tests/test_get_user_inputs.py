@@ -5,7 +5,6 @@ import sys
 from ecoliframalpha.input_handler import get_user_inputs
 
 
-
 def test_get_user_inputs_defaults(monkeypatch):
     """Test get_user_inputs() using all default values."""
     inputs = iter(["", "", "", "", "", "", ""])  # Simulate pressing Enter for all inputs

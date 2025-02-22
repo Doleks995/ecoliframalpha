@@ -1,7 +1,7 @@
 import sys
 import json
 import csv
-from ecoliframalpha.config.config import get_config
+from .config.config import get_config
 
 def get_user_inputs():
     """
