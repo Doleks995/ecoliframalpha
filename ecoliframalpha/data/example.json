@@ -1,0 +1,8 @@
+{
+    "num_cycles": 1500,
+    "nutrient_levels": [1.0, 0.8, 0.6],
+    "robust_codons": ["AAA", "GGT"],
+    "sensitive_codons": ["TTC", "ATC"],
+    "stress_probability": 0.2,
+    "recovery_probability": 0.1
+}

@@ -9,15 +9,24 @@ from codon_variability import analyze_variability
 from validation import validate_simulation
 from visualization import generate_visualizations
 from utils import ensure_output_directory, save_to_csv, save_to_json, generate_summary, save_summary_to_file
-# Default Settings
-OUTPUT_PATH = "results/"  # Path for saving output
-METRICS = ["variance", "Fano_factor", "CV", "CRI"]  # Metrics for variability
+from ecoliframalpha.config.config import get_config
+
+
+#Set default configuration
+
+
 
 def main():
+
+    config = get_config()
+
     # Step 1: Fetch user inputs
     user_inputs = get_user_inputs()
-    # Step 2: Ensure output directory exists
-    ensure_output_directory(OUTPUT_PATH)
+
+    # Step 2: Ensure output path exists
+    ensure_output_directory(config["output_path"])
+    if config["input_path"]: ensure_output_directory(config["input_path"]) 
+
     # Step 3: Initialize the simulation environment
     print("Initializing simulation...")
     simulation_data = initialize_simulation(
@@ -33,6 +42,8 @@ def main():
     codon_efficiency.update({
         codon: {"base_efficiency": 0.5, "type": "sensitive"} for codon in user_inputs["sensitive_codons"]
     })
+
+
     # Step 4: Simulate translation dynamics
     print("Simulating translation dynamics...")
     translation_results = simulate_translation(simulation_data)
@@ -49,9 +60,9 @@ def main():
     rna_results = process_rna(stressed_results, codon_efficiency)
     # Step 7: Analyze codon variability
     print("Analyzing codon variability...")
-    variability_results = analyze_variability(rna_results, metrics=METRICS)
+    variability_results = analyze_variability(rna_results, metrics=config["metrics"])
     # Save variability results to CSV
-    save_to_csv(variability_results, "variability_metrics.csv", OUTPUT_PATH)
+    save_to_csv(variability_results, "variability_metrics.csv", config["output_path"])
     # Step 8: Validate simulation outputs
     print("Validating simulation outputs...")
     experimental_data = pd.DataFrame({
@@ -63,14 +74,14 @@ def main():
     })
     validation_results = validate_simulation(variability_results, experimental_data)
     # Save validation results to JSON
-    save_to_json(validation_results, "validation_results.json", OUTPUT_PATH)
+    save_to_json(validation_results, "validation_results.json", config["output_path"])
     # Step 9: Generate visualizations
     print("Generating visualizations...")
-    generate_visualizations(variability_results, stressed_results, validation_results, OUTPUT_PATH)
+    generate_visualizations(variability_results, stressed_results, validation_results, config["output_path"])
     # Step 10: Generate and save simulation summary
     print("Generating simulation summary...")
     summary = generate_summary(variability_results, validation_results)
-    save_summary_to_file(summary, "simulation_summary.txt", OUTPUT_PATH)
-    print("Simulation completed! Results saved in:", OUTPUT_PATH)
+    save_summary_to_file(summary, "simulation_summary.txt", config["output_path"])
+    print("Simulation completed! Results saved in:", config["output_path"])
 if __name__ == "__main__":
     main()
