@@ -1,9 +1,7 @@
 import numpy as np
 import pandas as pd
 
-import pandas as pd
-
-def process_rna(stressed_results, codon_efficiency, rnase_activity=0.05, decay_variability=0.1):
+def process_rna(stressed_results, codon_efficiency, rnase_activity, decay_variability):
     """
     Processes RNA stability and decay based on codon efficiency.
 

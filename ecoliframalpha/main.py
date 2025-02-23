@@ -35,13 +35,6 @@ def main():
         robust_codons=user_inputs["robust_codons"],
         sensitive_codons=user_inputs["sensitive_codons"],
     )
-    # Extract codon efficiency from simulation initialization
-    codon_efficiency = {
-        codon: {"base_efficiency": 1.0, "type": "robust"} for codon in user_inputs["robust_codons"]
-    }
-    codon_efficiency.update({
-        codon: {"base_efficiency": 0.5, "type": "sensitive"} for codon in user_inputs["sensitive_codons"]
-    })
 
 
     # Step 4: Simulate translation dynamics
@@ -57,7 +50,7 @@ def main():
     )
     # Step 6: Process RNA stability and decay
     print("Processing RNA stability and decay...")
-    rna_results = process_rna(stressed_results, codon_efficiency)
+    rna_results = process_rna(stressed_results, simulation_data["codon_efficiency"], config["rnase_activity"], config["decay_variability"])
     # Step 7: Analyze codon variability
     print("Analyzing codon variability...")
     variability_results = analyze_variability(rna_results, metrics=config["metrics"])

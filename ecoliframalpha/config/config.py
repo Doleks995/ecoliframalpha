@@ -29,4 +29,8 @@ def get_config():
     config["base_efficiency_robust"] = 1.0
     config["base_efficiency_sensitive"] = 0.5
 
+    #RNA processing data
+    config["rnase_activity"] = 0.05
+    config["decay_variability"] = 0.1
+
     return config

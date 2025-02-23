@@ -40,8 +40,7 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
     codon_efficiency.update({codon: {"base_efficiency": config["base_efficiency_sensitive"], "type": "sensitive"} for codon in sensitive_codons})
 
     # Generate efficiency column names dynamically
-    efficiency_columns = {f"{codon}_efficiency": np.nan for codon in robust_codons + sensitive_codons}
-
+    efficiency_columns = {f"{codon}_efficiency": [codon_efficiency[codon]["base_efficiency"]] * num_cycles for codon in robust_codons + sensitive_codons}
     # Create an initial dataframe to track translation efficiency over cycles
     simulation_data = pd.DataFrame({
         "cycle": np.arange(1, num_cycles + 1),
@@ -54,5 +53,21 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
         "nutrient_levels": nutrient_levels,
         "codon_efficiency": codon_efficiency,
         "simulation_data": simulation_data,
+        "codon_efficiency": codon_efficiency
     }
 
+if __name__ == "__main__":
+    # Example inputs
+    num_cycles = 1000
+    nutrient_levels = [1.0, 0.75, 0.5, 0.25, 0.1]
+    robust_codons = ["AAA", "GAT"]
+    sensitive_codons = ["CGT", "CTG"]
+
+    # Initialize the simulation
+    initialization_results = initialize_simulation(
+        num_cycles, nutrient_levels, robust_codons, sensitive_codons
+    )
+    
+    # Access initialized data
+    print("Simulation Parameters:", initialization_results["codon_efficiency"])
+    print("Sample Data:", initialization_results["simulation_data"].head())
