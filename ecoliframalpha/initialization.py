@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from .config.config import get_config
 
 def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GAT"], sensitive_codons=["CGT", "CTG"] ):
     
@@ -22,7 +23,7 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
     Raises:
         ValueError: If input parameters are invalid.
     """
-
+    config = get_config()
     # Validate inputs
     if not isinstance(num_cycles, int) or num_cycles <= 0:
         raise ValueError("num_cycles must be a positive integer.")
@@ -35,8 +36,8 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
 
 
     # Initialize codon efficiency data
-    codon_efficiency = {codon: {"base_efficiency": 1.0, "type": "robust"} for codon in robust_codons}
-    codon_efficiency.update({codon: {"base_efficiency": 0.5, "type": "sensitive"} for codon in sensitive_codons})
+    codon_efficiency = {codon: {"base_efficiency": config["base_efficiency_robust"], "type": "robust"} for codon in robust_codons}
+    codon_efficiency.update({codon: {"base_efficiency": config["base_efficiency_sensitive"], "type": "sensitive"} for codon in sensitive_codons})
 
     # Generate efficiency column names dynamically
     efficiency_columns = {f"{codon}_efficiency": np.nan for codon in robust_codons + sensitive_codons}
@@ -55,18 +56,3 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
         "simulation_data": simulation_data,
     }
 
-if __name__ == "__main__":
-    # Example inputs
-    num_cycles = 1000
-    nutrient_levels = [1.0, 0.75, 0.5, 0.25, 0.1]
-    robust_codons = ["AAA", "GAT"]
-    sensitive_codons = ["CGT", "CTG"]
-
-    # Initialize the simulation
-    initialization_results = initialize_simulation(
-        num_cycles, nutrient_levels, robust_codons, sensitive_codons
-    )
-    
-    # Access initialized data
-    print("Simulation Parameters:", initialization_results["codon_efficiency"])
-    print("Sample Data:", initialization_results["simulation_data"].head())
