@@ -14,11 +14,11 @@ def ensure_output_directory(path):
         bool: True if the directory was created, False if it already existed.
 
     Raises:
-        OSError: If the directory cannot be created due to permission issues or other OS-level errors.
+        OSError: If the directory cannot be created due to permission issues.
     """
     try:
         os.makedirs(path, exist_ok=True)  # Prevent race conditions
-        return not os.path.exists(path)  # True if created, False if already existed
+        return os.path.exists(path)  # True if created, False if already existed
     except OSError as e:
         print(f"Error: Unable to create directory '{path}': {e}")
         raise  # Re-raise the error for better debugging
@@ -26,60 +26,98 @@ def ensure_output_directory(path):
 def save_to_csv(dataframe, filename, output_path="results/"):
     """
     Saves a DataFrame to a CSV file.
+
     Parameters:
         dataframe (pd.DataFrame): DataFrame to save.
-        filename (str): Name of the file to save.
-        output_path (str): Path to the directory where the file will be saved.
+        filename (str): Name of the file.
+        output_path (str): Path to save the file.
+
+    Example:
+        >>> df = pd.DataFrame({"A": [1, 2], "B": [3, 4]})
+        >>> save_to_csv(df, "output.csv")
     """
     ensure_output_directory(output_path)
     file_path = os.path.join(output_path, filename)
-    dataframe.to_csv(file_path, index=False)
-    print(f"Data saved to: {file_path}")
+
+    try:
+        dataframe.to_csv(file_path, index=False)
+        print(f"CSV saved to: {file_path}")
+    except Exception as e:
+        print(f"Failed to save CSV to {file_path}: {e}")
+        raise
+
 def save_to_json(data, filename, output_path="results/"):
     """
     Saves a dictionary to a JSON file.
+
     Parameters:
         data (dict): Dictionary to save.
-        filename (str): Name of the file to save.
-        output_path (str): Path to the directory where the file will be saved.
+        filename (str): Name of the file.
+        output_path (str): Path to save the file.
+
+    Example:
+        >>> data = {"key": "value"}
+        >>> save_to_json(data, "output.json")
     """
     ensure_output_directory(output_path)
     file_path = os.path.join(output_path, filename)
-    with open(file_path, "w") as json_file:
-        json.dump(data, json_file, indent=4)
-    print(f"JSON results saved to: {file_path}")
-    
+
+    try:
+        with open(file_path, "w") as json_file:
+            json.dump(data, json_file, indent=4)
+        print(f"JSON saved to: {file_path}")
+    except Exception as e:
+        print(f"Failed to save JSON to {file_path}: {e}")
+        raise
+
 def normalize_data(series):
     """
     Normalizes a pandas Series to a range of [0, 1].
+    
     Parameters:
-        series (pd.Series): The data series to normalize.
+        series (pd.Series): Data series to normalize.
+
     Returns:
         pd.Series: Normalized data.
+
+    Example:
+        >>> s = pd.Series([10, 20, 30])
+        >>> normalize_data(s)
     """
-    return (series - series.min()) / (series.max() - series.min())
+    if series.empty:
+        print("Normalization attempted on an empty series.")
+        return series
+
+    min_val, max_val = series.min(), series.max()
+
+    if min_val == max_val:
+        return pd.Series(0, index=series.index)  # Return all zeros if no variation
+
+    return (series - min_val) / (max_val - min_val)
 
 def generate_summary(variability_results, validation_results):
     """
     Generates a textual summary of simulation results.
+
     Parameters:
         variability_results (pd.DataFrame): DataFrame containing variability metrics.
         validation_results (dict): Dictionary with validation metrics.
+
     Returns:
         str: Summary of the simulation results.
+
+    Example:
+        >>> df = pd.DataFrame({"variance": [0.1, 0.2]})
+        >>> generate_summary(df, {"accuracy": 0.95})
     """
-    summary = []
-    summary.append("### Simulation Summary ###\n")
+    summary = ["### Simulation Summary ###\n"]
 
     # Variability Results
     if not variability_results.empty:
         summary.append("Variability Metrics (Mean Values):")
         for metric in ["variance", "Fano_factor", "CV", "CRI"]:
-            if metric in variability_results.columns:
-                mean_value = variability_results[metric].mean()
-                summary.append(f"- {metric}: {mean_value:.4f}")
-            else:
-                summary.append(f"- {metric}: (Not available)")
+            mean_value = variability_results[metric].mean() if metric in variability_results.columns else None
+            summary.append(f"- {metric}: {mean_value:.4f}" if mean_value is not None else f"- {metric}: (Not available)")
     else:
         summary.append("No variability results available.")
 
@@ -93,60 +131,27 @@ def generate_summary(variability_results, validation_results):
 
     return "\n".join(summary)
 
-
 def save_summary_to_file(summary, filename="simulation_summary.txt", output_path="results/"):
     """
     Saves a simulation summary to a text file.
+
     Parameters:
         summary (str): Summary text to save.
         filename (str): Name of the file.
-        output_path (str): Path to the directory where the file will be saved.
+        output_path (str): Path to save the file.
+
+    Example:
+        >>> summary = "Simulation completed successfully."
+        >>> save_summary_to_file(summary, "summary.txt")
     """
     ensure_output_directory(output_path)
     file_path = os.path.join(output_path, filename)
-    with open(file_path, "w") as file:
-        file.write(summary)
-    print(f"Summary saved to: {file_path}")
 
-
-if __name__ == "__main__":
-    from utils import (
-        save_to_csv,
-        save_to_json,
-        normalize_data,
-        generate_summary,
-        save_summary_to_file,
-    )
-    import pandas as pd
-    # Example Data
-    variability_results = pd.DataFrame({
-        "codon": ["AAA", "GAT", "CGT", "CTG"],
-        "variance": [0.0026, 0.0031, 0.0079, 0.0098],
-        "Fano_factor": [0.26, 0.31, 0.79, 0.98],
-        "CV": [0.051, 0.061, 0.119, 0.141],
-        "CRI": [4.1, 3.9, 1.6, 1.3],
-    })
-    validation_results = {
-        "variance": {
-            "correlation": 0.98,
-            "mean_squared_error": 0.00001,
-            "simulated_mean": 0.00275,
-            "experimental_mean": 0.00285,
-        },
-        "Fano_factor": {
-            "correlation": 0.95,
-            "mean_squared_error": 0.00002,
-            "simulated_mean": 0.35,
-            "experimental_mean": 0.36,
-        },
-    }
-    # Save results
-    save_to_csv(variability_results, "variability_metrics.csv")
-    save_to_json(validation_results, "validation_results.json")
-    # Normalize data and generate summary
-    normalized_variance = normalize_data(variability_results["variance"])
-    variability_results["normalized_variance"] = normalized_variance
-    summary = generate_summary(variability_results, validation_results)
-    print(summary)
-    # Save summary to file
-    save_summary_to_file(summary)
+    try:
+        with open(file_path, "w") as file:
+            file.write(summary)
+        print(f"Summary saved to: {file_path}")
+        return file_path
+    except Exception as e:
+        print(f"Failed to save summary to {file_path}: {e}")
+        raise

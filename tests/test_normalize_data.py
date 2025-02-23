@@ -24,7 +24,7 @@ def test_normalize_data_identical_values():
     series = pd.Series([5, 5, 5, 5])
     normalized = normalize_data(series)
 
-    assert normalized.isna().all()  # Expect all NaN due to division by zero
+    assert (normalized == 0).all()  # Expect all values to be 0 instead of NaN
 
 def test_normalize_data_empty_series():
     """Test normalizing an empty series."""
