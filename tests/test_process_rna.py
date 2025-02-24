@@ -5,7 +5,7 @@ from ecoliframalpha.rna_processing import process_rna
 def test_process_rna_basic():
     """Test RNA decay processing under normal conditions."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6]
     })
     codon_efficiency = {"AAA": {"base_efficiency": 0.9}}
@@ -26,17 +26,17 @@ def test_process_rna_empty_dataframe():
 
 
 def test_process_rna_missing_nutrient_column():
-    """Test handling when 'nutrient_level' column is missing."""
+    """Test handling when 'nutrient_levels' column is missing."""
     stressed_results = pd.DataFrame({"AAA_efficiency": [1.0, 0.8, 0.6]})
     codon_efficiency = {"AAA": {"base_efficiency": 0.9}}
 
-    with pytest.raises(ValueError, match="Missing required column: 'nutrient_level'"):
+    with pytest.raises(ValueError, match="Missing required column: 'nutrient_levels'"):
         process_rna(stressed_results, codon_efficiency)
 
 def test_process_rna_missing_codon_efficiency():
     """Test handling when a codon is missing 'base_efficiency'."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6]
     })
     codon_efficiency = {"AAA": {}}  # Missing 'base_efficiency'
@@ -47,7 +47,7 @@ def test_process_rna_missing_codon_efficiency():
 def test_process_rna_rnase_activity_effect():
     """Test that increasing RNase activity leads to faster efficiency decay."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6]
     })
     codon_efficiency = {"AAA": {"base_efficiency": 0.9}}
@@ -60,7 +60,7 @@ def test_process_rna_rnase_activity_effect():
 def test_process_rna_decay_variability_effect():
     """Test that increasing decay variability leads to greater efficiency reduction."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6]
     })
     codon_efficiency = {"AAA": {"base_efficiency": 0.9}}
@@ -73,7 +73,7 @@ def test_process_rna_decay_variability_effect():
 def test_process_rna_multiple_codons():
     """Test RNA processing for multiple codons."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6],
         "GGG_efficiency": [0.9, 0.7, 0.5]
     })
@@ -91,7 +91,7 @@ def test_process_rna_multiple_codons():
 def test_process_rna_does_not_modify_original():
     """Ensure function does not modify the input DataFrame."""
     stressed_results = pd.DataFrame({
-        "nutrient_level": [1.0, 0.5, 0.2],
+        "nutrient_levels": [1.0, 0.5, 0.2],
         "AAA_efficiency": [1.0, 0.8, 0.6]
     })
     codon_efficiency = {"AAA": {"base_efficiency": 0.9}}

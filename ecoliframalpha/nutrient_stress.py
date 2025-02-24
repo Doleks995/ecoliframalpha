@@ -37,10 +37,10 @@ def apply_nutrient_stress(translation_results, nutrient_levels, stress_probabili
 
         if np.random.rand() < stress_probability:
             if current_index < len(nutrient_levels)-1:
-                updated_results.loc[index, "nutrient_level"] = nutrient_levels[current_index + 1]
+                updated_results.loc[index, "nutrient_levels"] = nutrient_levels[current_index + 1]
         elif np.random.rand() < recovery_probability:
             if current_index > 0:
-                updated_results.loc[index, "nutrient_level"] = nutrient_levels[current_index - 1]
+                updated_results.loc[index, "nutrient_levels"] = nutrient_levels[current_index - 1]
 
 
     return updated_results

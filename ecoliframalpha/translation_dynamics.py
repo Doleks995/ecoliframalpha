@@ -30,7 +30,6 @@ def simulate_translation(initialization_results):
     # Extract simulation data
     simulation_data = initialization_results["simulation_data"]
     codon_efficiency = initialization_results["codon_efficiency"]
-    nutrient_levels = initialization_results["nutrient_levels"]
 
     # Constants for translation dynamics
     max_efficiency = config["max_efficiency"]  # Maximum codon efficiency under optimal conditions
@@ -39,15 +38,13 @@ def simulate_translation(initialization_results):
     nutrient_threshold = config["nutrient_threshold"]  # Nutrient level threshold for half-maximal efficiency
 
     # Iterate over each cycle in the simulation
-    for index, val in enumerate(nutrient_levels):
-        nutrient_level = val  # Extract current cycle's nutrient level
+    for index, nutrient_level in enumerate(simulation_data["nutrient_levels"]):
 
         # Update codon efficiencies
         for codon, properties in codon_efficiency.items():
             base_efficiency = properties["base_efficiency"]  # Reset to base value every row
             
             # Compute new efficiency from scratch
-            efficiency = max_efficiency
             efficiency = max_efficiency * expit(hill_coefficient * (nutrient_level - nutrient_threshold))
 
             if properties["type"] == "robust":

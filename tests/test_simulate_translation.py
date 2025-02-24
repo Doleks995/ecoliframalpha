@@ -4,7 +4,7 @@ from ecoliframalpha.translation_dynamics import simulate_translation
 
 def test_simulate_translation_basic():
     """Test basic translation simulation with valid data."""
-    simulation_data = pd.DataFrame({"nutrient_level": [0.2, 0.5, 0.8]})
+    simulation_data = pd.DataFrame({"nutrient_levels": [0.2, 0.5, 0.8]})
     codon_efficiency = {
         "AAA": {"base_efficiency": 1.0, "type": "robust"},
         "GGG": {"base_efficiency": 0.8, "type": "sensitive"},
