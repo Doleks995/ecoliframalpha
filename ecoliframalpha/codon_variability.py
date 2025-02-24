@@ -12,51 +12,60 @@ def analyze_variability(rna_results, metrics=["variance", "Fano_factor", "CV", "
     Returns:
         pd.DataFrame: A summary DataFrame with variability metrics for each codon.
     """
-    # Validate input
+    # Define valid metrics
+    valid_metrics = {"variance", "Fano_factor", "CV", "CRI"}
+    
+    # Validate `metrics` input
+    metrics = set(metrics) & valid_metrics  # Remove any invalid metrics
+    if not metrics:
+        raise ValueError(f"Metrics must be chosen from {valid_metrics}")
+
+    # Return empty DataFrame if input is empty
     if rna_results.empty:
-        return pd.DataFrame(columns=["codon"] + metrics)  # Return empty DataFrame with correct columns
+        return pd.DataFrame(columns=["codon"] + list(metrics))  
 
-    # Extract codons from the DataFrame columns
-    codons = [col.replace("_efficiency", "") for col in rna_results.columns if "_efficiency" in col]
+    # Extract codons from DataFrame columns
+    codons = [col.replace("_efficiency", "") for col in rna_results.columns if col.endswith("_efficiency")]
+    if not codons:
+        return pd.DataFrame(columns=["codon"] + list(metrics))  # Return early if no efficiency columns
 
-    if not codons:  # No efficiency columns found
-        return pd.DataFrame(columns=["codon"] + metrics)
-
-    # Initialize results dictionary
-    variability_results = {metric: [] for metric in metrics}
-    variability_results["codon"] = []
+    # Use a list of dictionaries for efficiency
+    results = []
 
     # Loop through each codon and calculate metrics
     for codon in codons:
         efficiencies = rna_results[f"{codon}_efficiency"].dropna()  # Remove NaNs for calculations
 
+        # Store results for this codon
+        codon_data = {"codon": codon}
+
         if efficiencies.empty:
-            # If all values are NaN, store NaN for each requested metric
-            variability_results["codon"].append(codon)
+            # Store NaN if all values are missing
             for metric in metrics:
-                variability_results[metric].append(np.nan)
-            continue  # Skip to the next codon
+                codon_data[metric] = np.nan
+        else:
+            # Compute required values
+            mean_efficiency = efficiencies.mean()
+            variance = efficiencies.var(ddof=1)  # Sample variance
+            std_dev = efficiencies.std(ddof=1)  # Sample standard deviation
+            max_val = efficiencies.max()
+            min_val = efficiencies.min()
+            range_val = max_val - min_val if max_val > min_val else np.nan
 
-        mean_efficiency = np.mean(efficiencies)
-        variance = np.var(efficiencies, ddof=1)  # Use sample variance
-        fano_factor = variance / mean_efficiency if mean_efficiency > 0 else np.nan
-        cv = np.std(efficiencies, ddof=1) / mean_efficiency if mean_efficiency > 0 else np.nan
-        cri = mean_efficiency / (np.max(efficiencies) - np.min(efficiencies)) if np.max(efficiencies) > np.min(efficiencies) else np.nan
+            # Store only requested metrics
+            if "variance" in metrics:
+                codon_data["variance"] = variance
+            if "Fano_factor" in metrics:
+                codon_data["Fano_factor"] = variance / mean_efficiency if mean_efficiency > 0 else np.nan
+            if "CV" in metrics:
+                codon_data["CV"] = std_dev / mean_efficiency if mean_efficiency > 0 else np.nan
+            if "CRI" in metrics:
+                codon_data["CRI"] = mean_efficiency / range_val if range_val > 0 else np.nan
 
-        # Append results for the current codon
-        variability_results["codon"].append(codon)
-        if "variance" in metrics:
-            variability_results["variance"].append(variance)
-        if "Fano_factor" in metrics:
-            variability_results["Fano_factor"].append(fano_factor)
-        if "CV" in metrics:
-            variability_results["CV"].append(cv)
-        if "CRI" in metrics:
-            variability_results["CRI"].append(cri)
+        results.append(codon_data)
 
-    # Convert results dictionary to DataFrame
-    return pd.DataFrame(variability_results)
-
+    # Convert list of dictionaries to DataFrame
+    return pd.DataFrame(results, columns=["codon"] + list(metrics))
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
@@ -84,7 +93,7 @@ if __name__ == "__main__":
     )
 
     # Process RNA stability and degradation
-    rna_results = process_rna(stressed_results, rnase_activity=0.05, decay_variability=0.1)
+    rna_results = process_rna(stressed_results, initialization_results["codon_efficiency"], rnase_activity=0.05, decay_variability=0.1)
 
     # Analyze codon variability
     variability_results = analyze_variability(rna_results, metrics=["variance", "Fano_factor", "CV", "CRI"])

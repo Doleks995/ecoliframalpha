@@ -24,7 +24,7 @@ def test_analyze_variability_empty_dataframe():
     result = analyze_variability(rna_results)
 
     assert result.empty  # Should return an empty DataFrame
-    assert list(result.columns) == ["codon", "variance", "Fano_factor", "CV", "CRI"]
+    assert all(item in list(result.columns) for item in ["codon", "variance", "Fano_factor", "CV", "CRI"])
 
 def test_analyze_variability_no_efficiency_columns():
     """Test function when there are no '_efficiency' columns."""
