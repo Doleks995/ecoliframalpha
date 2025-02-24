@@ -47,7 +47,6 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
         "nutrient_level": np.random.choice(nutrient_levels, size=num_cycles),
         **efficiency_columns,  # Dynamically add efficiency columns
     })
-
     return {
         "num_cycles": num_cycles,
         "nutrient_levels": nutrient_levels,

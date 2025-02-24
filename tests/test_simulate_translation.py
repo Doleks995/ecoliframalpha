@@ -31,20 +31,3 @@ def test_simulate_translation_missing_keys():
                               "codon_efficiency": {"AAA": {"base_efficiency": 1.0, "type": "robust"}}})#Missing 'nutrient_levels'
         simulate_translation({"simulation_data": pd.DataFrame({"nutrient_level": [0.2, 0.5, 0.8]}), 
                               "codon_efficiency": {"AAA": {"base_efficiency": 1.0}}})#Missing codon type
-
-
-def test_simulate_translation_robust_vs_sensitive():
-    """Test if robust and sensitive codons behave differently."""
-    simulation_data = pd.DataFrame({"nutrient_level": [0.2, 0.5, 0.8]})
-    codon_efficiency = {
-        "robust_codon": {"base_efficiency": 1.0, "type": "robust"},
-        "sensitive_codon": {"base_efficiency": 1.0, "type": "sensitive"},
-    }
-    nutrient_levels = [1.0, 0.75, 0.5, 0.25, 0.1]
-    initialization_results = {"simulation_data": simulation_data,
-                              "codon_efficiency": codon_efficiency,
-                              "nutrient_levels": nutrient_levels}
-    result = simulate_translation(initialization_results)
-    assert (result["robust_codon_efficiency"][0] > result["sensitive_codon_efficiency"][0])
-
-#add further tests

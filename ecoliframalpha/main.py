@@ -36,10 +36,10 @@ def main():
         sensitive_codons=user_inputs["sensitive_codons"],
     )
 
-
     # Step 4: Simulate translation dynamics
     print("Simulating translation dynamics...")
     translation_results = simulate_translation(simulation_data)
+    
     # Step 5: Apply nutrient stress effects
     print("Applying nutrient stress...")
     stressed_results = apply_nutrient_stress(

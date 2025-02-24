@@ -33,4 +33,10 @@ def get_config():
     config["rnase_activity"] = 0.05
     config["decay_variability"] = 0.1
 
+    # Constants for translation dynamics
+    config["max_efficiency"] = 1.5
+    config["min_efficiency"] = 0.1
+    config["hill_coefficient"] = 2
+    config["nutrient_threshold"] = 0.5
+
     return config
