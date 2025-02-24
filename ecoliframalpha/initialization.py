@@ -44,7 +44,7 @@ def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GA
     # Create an initial dataframe to track translation efficiency over cycles
     simulation_data = pd.DataFrame({
         "cycle": np.arange(1, num_cycles + 1),
-        "nutrient_level": np.random.choice(nutrient_levels, size=num_cycles),
+        "nutrient_levels": np.random.choice(nutrient_levels, size=num_cycles),
         **efficiency_columns,  # Dynamically add efficiency columns
     })
     return {

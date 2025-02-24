@@ -16,7 +16,7 @@ def test_initialize_simulation_basic():
     assert isinstance(result["simulation_data"], pd.DataFrame)
 
     # Check dynamically created efficiency columns
-    expected_columns = {"cycle", "nutrient_level"}
+    expected_columns = {"cycle", "nutrient_levels"}
     expected_columns.update({f"{codon}_efficiency" for codon in robust_codons + sensitive_codons})
 
     assert set(result["simulation_data"].columns) == expected_columns
@@ -43,14 +43,14 @@ def test_initialize_simulation_empty_codons():
 
     assert result["codon_efficiency"] == {}  # No codons in the efficiency dictionary
     assert "cycle" in result["simulation_data"].columns
-    assert "nutrient_level" in result["simulation_data"].columns
+    assert "nutrient_levels" in result["simulation_data"].columns
 
 def test_initialize_simulation_different_nutrient_levels():
     """Test that nutrient levels are assigned correctly in the simulation."""
     nutrient_levels = [0.9, 0.8, 0.7, 0.6]
     result = initialize_simulation(50, nutrient_levels, ["AAA"], ["CGT"])
 
-    assert set(result["simulation_data"]["nutrient_level"].unique()).issubset(nutrient_levels)
+    assert set(result["simulation_data"]["nutrient_levels"].unique()).issubset(nutrient_levels)
 
 def test_initialize_simulation_large_num_cycles():
     """Test handling of a large number of simulation cycles."""

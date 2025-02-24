@@ -8,43 +8,43 @@ def apply_nutrient_stress(translation_results, nutrient_levels, stress_probabili
     Parameters:
         translation_results (pd.DataFrame): DataFrame containing translation efficiencies and nutrient levels.
         nutrient_levels (list): List of possible nutrient levels (e.g., [1.0, 0.75, 0.5, 0.25, 0.1]).
-        stress_probability (float): Probability of a nutrient drop at each cycle.
-        recovery_probability (float): Probability of nutrient recovery at each cycle.
+        stress_probability (float): Probability of a nutrient drop at each cycle (0 ≤ p ≤ 1).
+        recovery_probability (float): Probability of nutrient recovery at each cycle (0 ≤ p ≤ 1).
 
     Returns:
         pd.DataFrame: Updated DataFrame with fluctuating nutrient levels.
     """
     # Validate inputs
     if not isinstance(nutrient_levels, list) or len(nutrient_levels) == 0:
-        raise ValueError("nutrient_levels must be a non-empty list.")
+        raise ValueError("nutrient_levels must be a non-empty list of numeric values.")
+
+    if not (0 <= stress_probability <= 1):
+        raise ValueError("stress_probability must be between 0 and 1.")
+
+    if not (0 <= recovery_probability <= 1):
+        raise ValueError("recovery_probability must be between 0 and 1.")
 
     if translation_results.empty:
-        return translation_results  # Return empty DataFrame if no data
+        return translation_results  # Return unchanged if DataFrame is empty
 
     # Copy to prevent modifying input DataFrame
     updated_results = translation_results.copy()
 
-    # Initialize variables
-    current_nutrient_level = nutrient_levels[0]  # Start at the highest nutrient level
-
     # Iterate over each cycle in the simulation
-    for index in range(len(updated_results)):
-        # Simulate stress or recovery events using random probabilities
+    for index, val in enumerate(updated_results["nutrient_levels"]):  # Ensure correct column name
+        val = float(val)  # Ensure `val` is a float to avoid lookup issues
+        current_index = nutrient_levels.index(val)
+
         if np.random.rand() < stress_probability:
-            # Drop to the next lower nutrient level if not already at the lowest level
-            current_index = nutrient_levels.index(current_nutrient_level)
-            if current_index < len(nutrient_levels) - 1:
-                current_nutrient_level = nutrient_levels[current_index + 1]
+            if current_index < len(nutrient_levels)-1:
+                updated_results.loc[index, "nutrient_level"] = nutrient_levels[current_index + 1]
         elif np.random.rand() < recovery_probability:
-            # Recover to the next higher nutrient level if not already at the highest level
-            current_index = nutrient_levels.index(current_nutrient_level)
             if current_index > 0:
-                current_nutrient_level = nutrient_levels[current_index - 1]
-        
-        # Update nutrient level for the current cycle
-        updated_results.at[index, "nutrient_level"] = current_nutrient_level
+                updated_results.loc[index, "nutrient_level"] = nutrient_levels[current_index - 1]
+
 
     return updated_results
+
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
