@@ -25,6 +25,37 @@ def get_config():
     config["stress_probability"] = 0.1
     config["recovery_probability"] = 0.05
 
+    config["possible_codons"] = [
+    "UUU", "UUC",  # Phenylalanine (Phe)
+    "UUA", "UUG",  # Leucine (Leu)
+    "CUU", "CUC", "CUA", "CUG",  # Leucine (Leu)
+    "AUU", "AUC", "AUA",  # Isoleucine (Ile)
+    "AUG",  # Methionine (Met) - Start Codon
+    "GUU", "GUC", "GUA", "GUG",  # Valine (Val)
+    
+    "UCU", "UCC", "UCA", "UCG",  # Serine (Ser)
+    "CCU", "CCC", "CCA", "CCG",  # Proline (Pro)
+    "ACU", "ACC", "ACA", "ACG",  # Threonine (Thr)
+    "GCU", "GCC", "GCA", "GCG",  # Alanine (Ala)
+    
+    "UAU", "UAC",  # Tyrosine (Tyr)
+    "UAA", "UAG",  # STOP Codons
+    "CAU", "CAC",  # Histidine (His)
+    "CAA", "CAG",  # Glutamine (Gln)
+    "AAU", "AAC",  # Asparagine (Asn)
+    "AAA", "AAG",  # Lysine (Lys)
+    "GAU", "GAC",  # Aspartic Acid (Asp)
+    "GAA", "GAG",  # Glutamic Acid (Glu)
+    
+    "UGU", "UGC",  # Cysteine (Cys)
+    "UGA",  # STOP Codon
+    "UGG",  # Tryptophan (Trp)
+    "CGU", "CGC", "CGA", "CGG",  # Arginine (Arg)
+    "AGU", "AGC",  # Serine (Ser)
+    "AGA", "AGG",  # Arginine (Arg)
+    "GGU", "GGC", "GGA", "GGG"   # Glycine (Gly)
+]
+
     #Codon efficiency data
     config["base_efficiency_robust"] = 1.0
     config["base_efficiency_sensitive"] = 0.5

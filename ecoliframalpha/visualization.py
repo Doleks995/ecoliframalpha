@@ -80,8 +80,8 @@ def generate_visualizations(variability_results, stressed_results, validation_re
     for metric, results in validation_results.items():
         if isinstance(results, dict) and "experimental_mean" in results and "simulated_mean" in results:
             plt.figure(figsize=(8, 6))
-            experimental = results
-            simulated = results
+            experimental = results["experimental_mean"]
+            simulated = results["simulated_mean"]
             plt.scatter(experimental, simulated, label=f"Metric: {metric}")
             plt.plot(experimental, simulated, 
                      linestyle="--", color="red", label="Perfect Agreement")

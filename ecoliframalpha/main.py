@@ -20,8 +20,11 @@ def main():
 
     config = get_config()
 
+
     # Step 1: Fetch user inputs
     user_inputs = get_user_inputs()
+    if config["robust_codons"] not in config["possible_codons"] and config["sensitive_codons"] not in config["possible_codons"]:
+        print("Codons in input do not exist.")
 
     # Step 2: Ensure output path exists
     ensure_output_directory(config["output_path"])
