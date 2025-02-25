@@ -43,10 +43,11 @@ def generate_visualizations(variability_results, stressed_results, validation_re
     subset = stressed_results.head(min(200, len(stressed_results)))
 
     # 1. Plot smoothed codon efficiencies
+    codon_list = set(variability_results["codon"])
     plt.figure(figsize=(12, 6))
-    for codon in ["AAA", "GAT", "CGT", "CTG"]:
+    for codon in codon_list:
         if f"{codon}_efficiency_smooth" in subset.columns:
-            plt.plot(subset.index, subset[f"{codon}_efficiency_smooth"], label=codon, alpha=0.8)
+            plt.plot(subset.index, subset[f"{codon}_efficiency_smooth"], label=codon, alpha=0.7)
     plt.title("Codon Translation Efficiencies Across Cycles")
     plt.xlabel("Cycle")
     plt.ylabel("Translation Efficiency")

@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import sys
 from ecoliframalpha.codon_variability import analyze_variability
 
 def test_analyze_variability_basic():
