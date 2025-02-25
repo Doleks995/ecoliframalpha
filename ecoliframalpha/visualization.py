@@ -80,10 +80,10 @@ def generate_visualizations(variability_results, stressed_results, validation_re
     for metric, results in validation_results.items():
         if isinstance(results, dict) and "experimental_mean" in results and "simulated_mean" in results:
             plt.figure(figsize=(8, 6))
-            experimental = results["experimental_mean"]
-            simulated = results["simulated_mean"]
+            experimental = results
+            simulated = results
             plt.scatter(experimental, simulated, label=f"Metric: {metric}")
-            plt.plot([min(experimental), max(experimental)], [min(experimental), max(experimental)], 
+            plt.plot(experimental, simulated, 
                      linestyle="--", color="red", label="Perfect Agreement")
             plt.title(f"Validation of {metric}")
             plt.xlabel("Experimental Data")
@@ -118,7 +118,10 @@ if __name__ == "__main__":
         stress_probability=0.1,
         recovery_probability=0.05,
     )
-    rna_results = process_rna(stressed_results, rnase_activity=0.05, decay_variability=0.1)
+    rna_results = process_rna(stressed_results,
+                              initialization_results["codon_efficiency"],
+                                rnase_activity=0.05, 
+                                decay_variability=0.1)
     variability_results = analyze_variability(rna_results)
     experimental_data = pd.DataFrame({
         "codon": ["AAA", "GAT", "CGT", "CTG"],
