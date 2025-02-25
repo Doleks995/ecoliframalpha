@@ -18,51 +18,42 @@ def validate_simulation(variability_results, experimental_data, metrics=["varian
     validation_results = {}
 
     for metric in metrics:
-        if metric in variability_results.columns and metric in experimental_data.columns:
-            # Extract simulated and experimental values for the metric
-            simulated = variability_results[metric].values
-            experimental = experimental_data[metric].values
-
-            # Check for NaN values
-            if np.isnan(simulated).all() or np.isnan(experimental).all():
-                validation_results[metric] = "NaN values detected in all entries."
-                print(f"Metric '{metric}' contains only NaN values. Skipping validation.")
-                continue
-
-            # Remove NaN values (if any)
-            mask = ~np.isnan(simulated) & ~np.isnan(experimental)
-            simulated = simulated[mask]
-            experimental = experimental[mask]
-
-            if len(simulated) < 2 or len(experimental) < 2:
-                validation_results[metric] = "Not enough data points for correlation."
-                print(f"Metric '{metric}' has too few values for correlation. Skipping.") #maybe return to print
-                continue
-
-            # Check for constant arrays
-            if np.all(simulated == simulated[0]) or np.all(experimental == experimental[0]):
-                validation_results[metric] = "Constant input detected."
-                print(f"Metric '{metric}' is constant in one or both datasets. Skipping correlation.")
-                continue
-
-            # Calculate Pearson correlation coefficient
-            correlation, _ = pearsonr(simulated, experimental)
-
-            # Calculate mean squared error (MSE)
-            mse = mean_squared_error(experimental, simulated)
-
-            # Store validation results
-            validation_results[metric] = {
-                "correlation": correlation,
-                "mean_squared_error": mse,
-                "simulated_mean": np.mean(simulated),
-                "experimental_mean": np.mean(experimental),
-            }
+        if metric not in variability_results or metric not in experimental_data:
+            validation_results[metric] = f"Metric {metric} missing in variability results or experimental data."
+            continue
         else:
-            validation_results[metric] = "Metric missing in simulation or experimental data."
-            print(f"Metric '{metric}' missing in one of the datasets.")
+            simulated = variability_results[metric].to_numpy()
+            experimental = experimental_data[metric].to_numpy()
+
+        #  Remove NaN values in one step
+        mask = ~np.isnan(simulated) & ~np.isnan(experimental)
+        simulated, experimental = simulated[mask], experimental[mask]
+
+        if len(simulated) < 2 or len(experimental) < 2:
+            validation_results[metric] = "Not enough data points for correlation."
+            print(f"Metric '{metric}' has too few values for correlation. Skipping.") #maybe return to print
+            continue
+
+        # Check for constant arrays
+        if np.all(simulated == simulated[0]) or np.all(experimental == experimental[0]):
+            validation_results[metric] = "Constant input detected."
+            print(f"Metric '{metric}' is constant in one or both datasets. Skipping correlation.")
+            continue
+
+        # Calculate Pearson correlation and MSE
+        correlation, _ = pearsonr(simulated, experimental)
+        mse = mean_squared_error(experimental, simulated)
+
+        # Store validation results
+        validation_results[metric] = {
+            "correlation": correlation,
+            "mean_squared_error": mse,
+            "simulated_mean": np.mean(simulated),
+            "experimental_mean": np.mean(experimental),
+        }
 
     return validation_results
+
 
 
 if __name__ == "__main__":

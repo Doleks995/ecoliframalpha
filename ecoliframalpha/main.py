@@ -51,11 +51,13 @@ def main():
     # Step 6: Process RNA stability and decay
     print("Processing RNA stability and decay...")
     rna_results = process_rna(stressed_results, simulation_data["codon_efficiency"], config["rnase_activity"], config["decay_variability"])
+    
     # Step 7: Analyze codon variability
     print("Analyzing codon variability...")
     variability_results = analyze_variability(rna_results, metrics=config["metrics"])
     # Save variability results to CSV
     save_to_csv(variability_results, "variability_metrics.csv", config["output_path"])
+
     # Step 8: Validate simulation outputs
     print("Validating simulation outputs...")
     experimental_data = pd.DataFrame({
@@ -65,12 +67,14 @@ def main():
         "CV": np.random.uniform(0.05, 0.15, len(user_inputs["robust_codons"] + user_inputs["sensitive_codons"])),
         "CRI": np.random.uniform(1.0, 5.0, len(user_inputs["robust_codons"] + user_inputs["sensitive_codons"])),
     })
-    validation_results = validate_simulation(variability_results, experimental_data)
+    validation_results = validate_simulation(variability_results, experimental_data, config["metrics"])
     # Save validation results to JSON
     save_to_json(validation_results, "validation_results.json", config["output_path"])
+
     # Step 9: Generate visualizations
     print("Generating visualizations...")
     generate_visualizations(variability_results, stressed_results, validation_results, config["output_path"])
+    
     # Step 10: Generate and save simulation summary
     print("Generating simulation summary...")
     summary = generate_summary(variability_results, validation_results)

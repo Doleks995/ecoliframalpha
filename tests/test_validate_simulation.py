@@ -24,7 +24,7 @@ def test_validate_simulation_missing_metric():
     variability_results = pd.DataFrame({"variance": [0.1, 0.2, 0.3]})
     experimental_data = pd.DataFrame({"Fano_factor": [1.1, 1.2, 1.3]})  # No "variance"
     result = validate_simulation(variability_results, experimental_data, metrics=["variance"])  # Explicitly test "variance" only
-    assert result["variance"] == "Metric missing in simulation or experimental data."
+    assert result["variance"] == "Metric variance missing in variability results or experimental data."
     assert "Fano_factor" not in result  # Not requested
 
 def test_validate_simulation_nan_values():
@@ -32,7 +32,7 @@ def test_validate_simulation_nan_values():
     variability_results = pd.DataFrame({"variance": [np.nan, np.nan, np.nan]})
     experimental_data = pd.DataFrame({"variance": [0.1, 0.2, 0.3]})
     result = validate_simulation(variability_results, experimental_data)
-    assert result["variance"] == "NaN values detected in all entries."
+    assert result["variance"] == "Not enough data points for correlation."
 
 def test_validate_simulation_constant_values():
     """Test handling of constant values in a dataset."""
