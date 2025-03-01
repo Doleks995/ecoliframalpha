@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module ecoliframalpha.utils</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title"><a href="ecoliframalpha.html" class="white">ecoliframalpha</a>.utils</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Crcb30%5Cdocuments%5Cgithub%5Cecoliframalpha%5Cecoliframalpha%5Cutils.py">c:\users\rcb30\documents\github\ecoliframalpha\ecoliframalpha\utils.py</a></td></tr></table>
+    <p></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="json.html">json</a><br>
+</td><td class="multicolumn"><a href="numpy.html">numpy</a><br>
+</td><td class="multicolumn"><a href="os.html">os</a><br>
+</td><td class="multicolumn"><a href="pandas.html">pandas</a><br>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-ensure_output_directory"><strong>ensure_output_directory</strong></a>(path)</dt><dd><span class="code">Ensures&nbsp;that&nbsp;the&nbsp;output&nbsp;directory&nbsp;exists.&nbsp;If&nbsp;it&nbsp;does&nbsp;not&nbsp;exist,&nbsp;it&nbsp;creates&nbsp;it.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str):&nbsp;Path&nbsp;to&nbsp;the&nbsp;output&nbsp;directory.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;the&nbsp;directory&nbsp;was&nbsp;created,&nbsp;False&nbsp;if&nbsp;it&nbsp;already&nbsp;existed.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;OSError:&nbsp;If&nbsp;the&nbsp;directory&nbsp;cannot&nbsp;be&nbsp;created&nbsp;due&nbsp;to&nbsp;permission&nbsp;issues.</span></dd></dl>
+ <dl><dt><a name="-generate_summary"><strong>generate_summary</strong></a>(variability_results, validation_results)</dt><dd><span class="code">Generates&nbsp;a&nbsp;textual&nbsp;summary&nbsp;of&nbsp;simulation&nbsp;results.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;variability_results&nbsp;(pd.DataFrame):&nbsp;DataFrame&nbsp;containing&nbsp;variability&nbsp;metrics.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_results&nbsp;(dict):&nbsp;Dictionary&nbsp;with&nbsp;validation&nbsp;metrics.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;Summary&nbsp;of&nbsp;the&nbsp;simulation&nbsp;results.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;df&nbsp;=&nbsp;pd.DataFrame({"variance":&nbsp;[0.1,&nbsp;0.2]})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-generate_summary">generate_summary</a>(df,&nbsp;{"accuracy":&nbsp;0.95})</span></dd></dl>
+ <dl><dt><a name="-normalize_data"><strong>normalize_data</strong></a>(series)</dt><dd><span class="code">Normalizes&nbsp;a&nbsp;pandas&nbsp;Series&nbsp;to&nbsp;a&nbsp;range&nbsp;of&nbsp;[0,&nbsp;1].<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;series&nbsp;(pd.Series):&nbsp;Data&nbsp;series&nbsp;to&nbsp;normalize.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pd.Series:&nbsp;Normalized&nbsp;data.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;s&nbsp;=&nbsp;pd.Series([10,&nbsp;20,&nbsp;30])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-normalize_data">normalize_data</a>(s)</span></dd></dl>
+ <dl><dt><a name="-save_summary_to_file"><strong>save_summary_to_file</strong></a>(summary, filename='simulation_summary.txt', output_path='results/')</dt><dd><span class="code">Saves&nbsp;a&nbsp;simulation&nbsp;summary&nbsp;to&nbsp;a&nbsp;text&nbsp;file.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;summary&nbsp;(str):&nbsp;Summary&nbsp;text&nbsp;to&nbsp;save.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;the&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;output_path&nbsp;(str):&nbsp;Path&nbsp;to&nbsp;save&nbsp;the&nbsp;file.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;summary&nbsp;=&nbsp;"Simulation&nbsp;completed&nbsp;successfully."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-save_summary_to_file">save_summary_to_file</a>(summary,&nbsp;"summary.txt")</span></dd></dl>
+ <dl><dt><a name="-save_to_csv"><strong>save_to_csv</strong></a>(dataframe, filename, output_path='results/')</dt><dd><span class="code">Saves&nbsp;a&nbsp;DataFrame&nbsp;to&nbsp;a&nbsp;CSV&nbsp;file.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dataframe&nbsp;(pd.DataFrame):&nbsp;DataFrame&nbsp;to&nbsp;save.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;the&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;output_path&nbsp;(str):&nbsp;Path&nbsp;to&nbsp;save&nbsp;the&nbsp;file.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;df&nbsp;=&nbsp;pd.DataFrame({"A":&nbsp;[1,&nbsp;2],&nbsp;"B":&nbsp;[3,&nbsp;4]})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-save_to_csv">save_to_csv</a>(df,&nbsp;"output.csv")</span></dd></dl>
+ <dl><dt><a name="-save_to_json"><strong>save_to_json</strong></a>(data, filename, output_path='results/')</dt><dd><span class="code">Saves&nbsp;a&nbsp;dictionary&nbsp;to&nbsp;a&nbsp;JSON&nbsp;file.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(dict):&nbsp;Dictionary&nbsp;to&nbsp;save.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;(str):&nbsp;Name&nbsp;of&nbsp;the&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;output_path&nbsp;(str):&nbsp;Path&nbsp;to&nbsp;save&nbsp;the&nbsp;file.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;data&nbsp;=&nbsp;{"key":&nbsp;"value"}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-save_to_json">save_to_json</a>(data,&nbsp;"output.json")</span></dd></dl>
+</td></tr></table>
+</body></html>

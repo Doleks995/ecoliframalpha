@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.special import expit  # For modeling Hill functions
-from config.config import get_config
+from ecoliframalpha.config.config import get_config
 
 def simulate_translation(initialization_results):
     """

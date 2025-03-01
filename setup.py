@@ -19,6 +19,11 @@ setup(
         "scipy",
         "seaborn"
     ],
+    entry_points={
+        "console_scripts": [
+            "ecoliframalpha = ecoliframalpha.main:main",
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

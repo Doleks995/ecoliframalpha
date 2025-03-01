@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from config.config import get_config
+from ecoliframalpha.config.config import get_config
 
 def initialize_simulation(num_cycles, nutrient_levels, robust_codons=["AAA", "GAT"], sensitive_codons=["CGT", "CTG"] ):
     

@@ -1,15 +1,15 @@
 import numpy as np
 import pandas as pd
-from input_handler import get_user_inputs
-from initialization import initialize_simulation
-from translation_dynamics import simulate_translation
-from nutrient_stress import apply_nutrient_stress
-from rna_processing import process_rna
-from codon_variability import analyze_variability
-from validation import validate_simulation
-from visualization import generate_visualizations
-from utils import ensure_output_directory, save_to_csv, save_to_json, generate_summary, save_summary_to_file
-from config.config import get_config
+from ecoliframalpha.input_handler import get_user_inputs
+from ecoliframalpha.initialization import initialize_simulation
+from ecoliframalpha.translation_dynamics import simulate_translation
+from ecoliframalpha.nutrient_stress import apply_nutrient_stress
+from ecoliframalpha.rna_processing import process_rna
+from ecoliframalpha.codon_variability import analyze_variability
+from ecoliframalpha.validation import validate_simulation
+from ecoliframalpha.visualization import generate_visualizations
+from ecoliframalpha.utils import ensure_output_directory, save_to_csv, save_to_json, generate_summary, save_summary_to_file
+from ecoliframalpha.config.config import get_config
 
 
 #Set default configuration
