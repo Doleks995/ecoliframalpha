@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,84 +14,88 @@ def generate_visualizations(variability_results, stressed_results, validation_re
         validation_results (dict): Dictionary containing validation metrics.
         output_path (str): Path to save the generated visualizations.
     """
-    # Ensure the output path exists
-    import os
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
+    # Ensure output directory exists
+    os.makedirs(output_path, exist_ok=True)
 
-    # Smooth data to reduce noise
-    # Dynamic smoothing for all codons
+    if stressed_results.empty or variability_results.empty:
+        raise ValueError("One or more input DataFrames are empty.")
+
+    # Ensure necessary columns exist in stressed_results
+    if "nutrient_levels" not in stressed_results.columns:
+        raise ValueError("Missing 'nutrient_levels' column in stressed_results DataFrame.")
+
+    # Ensure variability_results has at least 'codon' column
+    if "codon" not in variability_results.columns:
+        raise ValueError("Missing 'codon' column in variability_results DataFrame.")
+
+    # Skip visualization if DataFrames are empty
+    if stressed_results.empty or variability_results.empty:
+        print("Skipping visualization: Input DataFrames are empty.")
+        return
+
+    # Smooth data (handle NaN values)
     for codon in [col.replace("_efficiency", "") for col in stressed_results.columns if "_efficiency" in col]:
         stressed_results[f"{codon}_efficiency_smooth"] = (
-            stressed_results[f"{codon}_efficiency"].rolling(window=10).mean()
+            stressed_results[f"{codon}_efficiency"].rolling(window=10).mean().bfill()
         )
 
-    # Subset data for better visualization
-    subset = stressed_results.head(200)
+    # Subset data for visualization
+    subset = stressed_results.head(min(200, len(stressed_results)))
 
-    # Plot smoothed codon efficiencies
+    # 1. Plot smoothed codon efficiencies
+    codon_list = set(variability_results["codon"])
     plt.figure(figsize=(12, 6))
-    for codon in ["AAA", "GAT", "CGT", "CTG"]:
-        plt.plot(
-            subset.index,
-            subset[f"{codon}_efficiency_smooth"],
-            label=codon,
-            alpha=0.8,
-        )
+    for codon in codon_list:
+        if f"{codon}_efficiency_smooth" in subset.columns:
+            plt.plot(subset.index, subset[f"{codon}_efficiency_smooth"], label=codon, alpha=0.7)
     plt.title("Codon Translation Efficiencies Across Cycles")
     plt.xlabel("Cycle")
     plt.ylabel("Translation Efficiency")
     plt.legend(title="Codons")
     plt.tight_layout()
-    plt.savefig(output_path + "codon_efficiencies_smoothed.png")
-    plt.show()
+    plt.savefig(os.path.join(output_path, "codon_efficiencies_smoothed.png"))
+    plt.close()
 
     # 2. Plot Nutrient Levels Across Cycles
     plt.figure(figsize=(12, 6))
-    plt.plot(
-        stressed_results.index,
-        stressed_results["nutrient_level"],
-        color="green",
-        alpha=0.8,
-    )
+    plt.plot(stressed_results.index, stressed_results["nutrient_levels"], color="green", alpha=0.8)
     plt.title("Nutrient Levels Across Cycles")
     plt.xlabel("Cycle")
     plt.ylabel("Nutrient Level")
     plt.tight_layout()
-    plt.savefig(output_path + "nutrient_levels.png")
-    plt.show()
+    plt.savefig(os.path.join(output_path, "nutrient_levels.png"))
+    plt.close()
 
     # 3. Bar Plot for Variability Metrics
     plt.figure(figsize=(12, 6))
-    variability_long = variability_results.melt(
-        id_vars=["codon"], var_name="Metric", value_name="Value"
-    )
+    variability_long = variability_results.melt(id_vars=["codon"], var_name="Metric", value_name="Value")
     sns.barplot(x="codon", y="Value", hue="Metric", data=variability_long)
     plt.title("Codon Variability Metrics")
     plt.xlabel("Codon")
     plt.ylabel("Metric Value")
     plt.tight_layout()
-    plt.savefig(output_path + "variability_metrics.png")
-    plt.show()
+    plt.savefig(os.path.join(output_path, "variability_metrics.png"))
+    plt.close()
 
     # 4. Scatter Plot for Validation (Simulated vs. Experimental)
     for metric, results in validation_results.items():
-        if isinstance(results, dict):
+        if isinstance(results, dict) and "experimental_mean" in results and "simulated_mean" in results:
             plt.figure(figsize=(8, 6))
-            experimental = results.get("experimental_mean", [])
-            simulated = results.get("simulated_mean", [])
+            experimental = results["experimental_mean"]
+            simulated = results["simulated_mean"]
             plt.scatter(experimental, simulated, label=f"Metric: {metric}")
-            plt.plot([min(experimental), max(experimental)], [min(experimental), max(experimental)], 
+            plt.plot(experimental, simulated, 
                      linestyle="--", color="red", label="Perfect Agreement")
             plt.title(f"Validation of {metric}")
             plt.xlabel("Experimental Data")
             plt.ylabel("Simulated Data")
             plt.legend()
             plt.tight_layout()
-            plt.savefig(output_path + f"validation_{metric}.png")
-            plt.show()
+            plt.savefig(os.path.join(output_path, f"validation_{metric}.png"))
+            plt.close()
 
     print("All visualizations generated and saved in:", output_path)
+
 
 if __name__ == "__main__":
     from initialization import initialize_simulation
@@ -114,7 +119,10 @@ if __name__ == "__main__":
         stress_probability=0.1,
         recovery_probability=0.05,
     )
-    rna_results = process_rna(stressed_results, rnase_activity=0.05, decay_variability=0.1)
+    rna_results = process_rna(stressed_results,
+                              initialization_results["codon_efficiency"],
+                                rnase_activity=0.05, 
+                                decay_variability=0.1)
     variability_results = analyze_variability(rna_results)
     experimental_data = pd.DataFrame({
         "codon": ["AAA", "GAT", "CGT", "CTG"],
