@@ -1,8 +1,4 @@
 # ECOLI-FRAM ALPHA
-This is my final project for BIOS E-68 Section 1 (17136)
-
-# YOUTUBE LINK
-https://youtu.be/om0iujvwx9M
 
 # PROPOSAL
 
