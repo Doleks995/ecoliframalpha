@@ -8,6 +8,10 @@ This project will act as an example of how simulations can be used as an alterna
 
 The project will involve developing a python-based simulation which can model the synthesis rate changes of robust and sensitive codons in E. coli under stress, specifically changing nutrient conditions. It will primarily focus on the codon degeneracy lifting mechanism, which will provide a computational framework to compute the synthesis rate. As mentioned, the simulation will make use of computational techniques and statistical modeling, both of which will be used to model the process, interpret data, and compute the result. I will accumulate this process into a report which will follow a traditional experimental format. 
 
+# LINK TO VIDEO
+
+https://youtu.be/ofG2T5id6k4
+
 # SOURCES
 
 https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-022-08635-0\
